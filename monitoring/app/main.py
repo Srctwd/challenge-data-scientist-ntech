@@ -1,4 +1,4 @@
-"""Main module."""
+#Main module.
 import uvicorn
 from fastapi import FastAPI
 from api.routers import router
