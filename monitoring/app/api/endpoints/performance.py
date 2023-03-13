@@ -14,7 +14,7 @@ async def performance(records: Request):
 
     #DataFrame
     df = pd.DataFrame(data)
-    df = df.replace(np.nan, None)
+    df = df.fillna(np.nan)
     X_test = df.drop(["REF_DATE", "TARGET"], axis=1)
     y_test = df["TARGET"]
 
@@ -24,9 +24,8 @@ async def performance(records: Request):
     #Model
     f = open(os.path.abspath(__file__ + 4 * '/..')+"/model.pkl", "rb")
     model = pickle.load(f)
-    y_pred = model.predict(X_test)
+    y_pred = model.predict_proba(X_test)[:,1]
     AUC = sklearn.metrics.roc_auc_score(y_test, y_pred)
-    accuracy = sklearn.metrics.accuracy_score(y_test, y_pred)
-    response = str([volumetry, AUC, accuracy])
+    response = str([volumetry, AUC])
 
     return response
