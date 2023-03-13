@@ -15,8 +15,8 @@ async def performance(records: Request):
     #DataFrame
     df = pd.DataFrame(data)
     df = df.replace(np.nan, None)
-    X_train = df.drop(["REF_DATE", "TARGET"], axis=1)
-    y_train = df["TARGET"]
+    X_test = df.drop(["REF_DATE", "TARGET"], axis=1)
+    y_test = df["TARGET"]
 
     #Volumetry
     volumetry = df["REF_DATE"].str[:7].value_counts().to_dict()
@@ -24,8 +24,9 @@ async def performance(records: Request):
     #Model
     f = open(os.path.abspath(__file__ + 4 * '/..')+"/model.pkl", "rb")
     model = pickle.load(f)
-    score = model.predict(X_train)
-    fpr, tpr, thresholds = sklearn.metrics.roc_curve(y_train, score)
-    response = str([fpr, tpr, thresholds, volumetry])
+    y_pred = model.predict(X_test)
+    AUC = sklearn.metrics.roc_auc_score(y_test, y_pred)
+    accuracy = sklearn.metrics.accuracy_score(y_test, y_pred)
+    response = str([volumetry, AUC, accuracy])
 
     return response
