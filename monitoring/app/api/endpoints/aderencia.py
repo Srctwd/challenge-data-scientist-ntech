@@ -15,7 +15,13 @@ async def adherence(path: Request):
     data = await path.body()
     data = data.decode("utf-8")
     #Loading csv
-    df = pd.read_csv(data, compression="gzip")
+
+    try:
+        df = pd.read_csv(data, compression="gzip")
+    except:
+        error = "Invalid path"
+        return error
+    
     df = df.fillna(np.nan)
     df = df.drop(["REF_DATE"], axis=1)
     if "TARGET" in df:

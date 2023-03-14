@@ -28,4 +28,4 @@ async def performance(records: Request):
     AUC = sklearn.metrics.roc_auc_score(y_test, y_pred)
     response = str([volumetry, AUC])
 
-    return response
+    return volumetry, "+"+str(AUC)
